@@ -54,7 +54,7 @@ namespace moodle2
                 {
                     play = false;
                 }
-
+                Console.WriteLine("Trykk Enter for neste runde");
                 Console.ReadLine();
                 
             }
