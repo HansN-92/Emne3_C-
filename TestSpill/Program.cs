@@ -19,9 +19,9 @@
             Mage tempMage = new Mage("temp");
             Rogue tempRogue = new Rogue("temp");
 
-            Console.WriteLine($"Select Class: \n1 = Warrior \n HP: {tempWarrior.Health} Str: {tempWarrior.Strength} Skill: {tempWarrior.Skill}" +
-                                                  $"\n2 = Mage \n HP: {tempMage.Health} Str: {tempMage.Strength} Skill: {tempMage.Skill}" +
-                                                  $"\n3 = Rogue \n HP: {tempRogue.Health} Str: {tempRogue.Strength} Skill: {tempRogue.Skill}");
+            Console.WriteLine($"Select Class: \n1 = Warrior \n HP: {tempWarrior.Health} Str: {tempWarrior.Strength} Skill: {tempWarrior.Skills}" +
+                                                  $"\n2 = Mage \n HP: {tempMage.Health} Str: {tempMage.Strength} Skill: {tempMage.Skills}" +
+                                                  $"\n3 = Rogue \n HP: {tempRogue.Health} Str: {tempRogue.Strength} Skill: {tempRogue.Skills}");
             
             string classChoice = Console.ReadLine();
 
@@ -118,15 +118,25 @@
     internal class GameCharacter
     {
         public string Name { get; set; }
+        public int MaxHealth { get; set; } = 100;
         public int Health = 100;
         public int Strength = 30;
         public int Block = 0;
         public int Dodge = 0;
-        public string Skill { get; set; } = "None";
+        public List<string> Skills { get; set; } = new List<string>();
 
         public GameCharacter(string name)
         {
             Name = name;
+        }
+
+        public void ShowSkillMenu()
+        {
+            Console.WriteLine("Select skill:");
+            for (int i = 0; i < Skills.Count; i++)
+            {
+                Console.WriteLine($"{i + 1} = {Skills[i]}");
+            }
         }
 
         public void Attack(GameCharacter target)
@@ -162,20 +172,25 @@
     {
         public Warrior(string name) : base(name)
         {
+            MaxHealth = 150;
             Health = 150;
             Strength = 40;
-            List<string> Skill = ["Block", "StrongAttack", "Shield Slam"];
+            Skills = new List<string> { "Block", "StrongAttack", "Shield Slam" };
         }
 
         public override void UseSkill(GameCharacter target)
         {
+            ShowSkillMenu();
+            string input = Console.ReadLine();
+            if (!int.TryParse(input, out int choice)) return;
+            string selectedSkill = Skills[choice - 1];
             Random rand = new Random();
-            switch (Skill)
+            switch (selectedSkill)
             {
                 case "Block":
                     int blockedDmg = rand.Next(50, 120);
-                    target.Block = blockedDmg;
-                    Console.WriteLine($"{Name} Blocks: {target.Block} DMG");
+                    Block = blockedDmg;
+                    Console.WriteLine($"{Name} Gain {target.Block} Block");
                     break;
 
                 case "StrongAttack":
@@ -186,10 +201,16 @@
                     break;
 
                 case "Shield Slam":
-                    if (Block < 0)
+                    if (Block > 0)
                     {
                         int slamDmg = Block * 2 + Strength;
                         target.Health -= slamDmg;
+                        Console.WriteLine($"{Name} use {selectedSkill} for {slamDmg} DMG");
+                    }
+                    else
+                    {
+                        Console.WriteLine($"{Name} has {Block}");
+                        ShowSkillMenu();
                     }
                     break;
             }
@@ -199,29 +220,38 @@
     {
         public Mage(string name) : base(name)
         {
+            MaxHealth = 80;
             Health = 80;
             Strength = 70;
-            List<string> Skill = ["Fireball", "Magic Missile", "Weaken"];
+            Skills = new List<string> { "Fireball", "Magic Missile", "Weaken" };
         }
 
         public override void UseSkill(GameCharacter target)
         {
+            ShowSkillMenu();
+            string input = Console.ReadLine();
+            if (!int.TryParse(input, out int choice)) return;
+            string selectedSkill = Skills[choice - 1];
             Random rand = new Random();
-            switch (Skill)
+            switch (selectedSkill)
             {
                 case "Fireball":
                     int damage = rand.Next(50, 100);
-                    target.Health -= (damage + Strength);
+                    int dmgDealt = damage + Strength;
+                    target.Health -= dmgDealt;
+                    Console.WriteLine($"{Name} cast {selectedSkill} for {dmgDealt}");
                     break;
 
                 case "Magic Missile":
                     int missiles = rand.Next(3, 10);
                     int missileDmg = Strength / 2;
                     target.Health -= missiles * missileDmg;
+                    Console.WriteLine($"{Name} cast {selectedSkill} and HIT {missiles} for {missileDmg} each");
                     break;
 
                 case "Weaken":
-                    target.Strength %= 50;
+                    target.Strength /= 2;
+                    Console.WriteLine($"{Name} cast {selectedSkill} on {target} reducing Str to {target.Strength}");
                     break;
             }
         }
@@ -230,35 +260,51 @@
     {
         public Rogue(string name) : base(name)
         {
+            MaxHealth = 100;
             Health = 100;
             Strength = 50;
             Dodge = 0;
-            List<string> Skill = ["Crit", "Poison Dagger", "Dodge"];
+            Skills = new List<string> { "Crit", "Poison Dagger", "Dodge" };
         }
 
         public override void UseSkill(GameCharacter target)
         {
+            ShowSkillMenu();
+            string input = Console.ReadLine();
+            if (!int.TryParse(input, out int choice)) return;
+            string selectedSkill = Skills[choice - 1];
             Random rand = new Random();
-            switch (Skill)
+            switch (selectedSkill)
             {
                 case "Crit":
-                    if (target.Health < .5)
+                    if ((double)target.Health / target.MaxHealth < 0.5)
                     {
                         int critMultiplier = rand.Next(2, 5);
                         int damage = rand.Next(10, 30);
                         int damageDealt = damage + Strength / 2 * critMultiplier;
                         target.Health -= damageDealt;
+                        Console.WriteLine($"{Name} used {selectedSkill}*{critMultiplier} for {damageDealt}");
+                    }
+                    else
+                    {
+                        Console.WriteLine($"{target.Name} HP threshold not met");
+                        ShowSkillMenu();
                     }
                     break;
 
                 case "Poison Dagger":
                     int psnDamage = rand.Next(10, 20);
+                    int psnDuration = rand.Next(1, 5);
                     int psnDamageDealt = psnDamage;
                     target.Health -= psnDamageDealt;
+                    
+                    Console.WriteLine($"{Name} used {selectedSkill} dealing {psnDamageDealt} for {psnDuration}");
                     break;
 
                 case "Dodge":
-                    Dodge += 50;
+                    int dodgeChance = rand.Next(20, 50);
+                    Dodge += dodgeChance;
+                    Console.WriteLine($"{Name} used {selectedSkill} gaining {dodgeChance}");
                     break;
             }
         }
