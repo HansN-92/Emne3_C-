@@ -1,6 +1,4 @@
-﻿using System.Linq.Expressions;
-
-namespace TestSpill
+﻿namespace TestSpill
 {
     internal class Program
     {
@@ -14,44 +12,88 @@ namespace TestSpill
                 inputName = "Player";
             }
 
-            GameCharacter player = new GameCharacter(inputName);
-            GameCharacter computer = new GameCharacter("Computer");
+            int roundNumber = 0;
             bool fightActive = true;
+
+            Warrior tempWarrior = new Warrior("temp");
+            Mage tempMage = new Mage("temp");
+            Rogue tempRogue = new Rogue("temp");
+
+            Console.WriteLine($"Select Class: \n1 = Warrior \n HP: {tempWarrior.Health} Str: {tempWarrior.Strength} Skill: {tempWarrior.Skill}" +
+                                                  $"\n2 = Mage \n HP: {tempMage.Health} Str: {tempMage.Strength} Skill: {tempMage.Skill}" +
+                                                  $"\n3 = Rogue \n HP: {tempRogue.Health} Str: {tempRogue.Strength} Skill: {tempRogue.Skill}");
+            
+            string classChoice = Console.ReadLine();
+
+            GameCharacter player;
+
+            switch (classChoice)
+            {
+                case "1":
+                    player = new Warrior(inputName);
+                    break;
+
+                case "2":
+                    player = new Mage(inputName);
+                    break;
+
+                case "3":
+                    player = new Rogue(inputName);
+                    break;
+                default: 
+                    player = new GameCharacter(inputName);
+                    break;
+            }
+
+            Console.WriteLine($"Selected Class {player.GetType().Name}");
+            Console.ReadLine();
+
+            GameCharacter computer;
+            Random rand = new Random();
+            int computerClassChoice = rand.Next(1, 4);
+            switch (computerClassChoice)
+            {
+                case 1:
+                    computer = new Warrior("Computer");
+                    break;
+
+                case 2:
+                    computer = new Mage("Computer");
+                    break;
+
+                case 3:
+                    computer = new Rogue("Computer");
+                    break;
+                default:
+                    computer = new GameCharacter("Computer");
+                    break;
+            }
 
             Console.WriteLine($"{player.Name} HP: {player.Health} Str: {player.Strength} Block:{player.Block}\n{computer.Name} HP: {computer.Health} Str: {computer.Strength} Block:{computer.Block}");
             Console.ReadLine();
 
             while (fightActive)
             {
-                Console.WriteLine("1. Angrip  2. Skill");
+                roundNumber += 1;
+                Console.WriteLine($"Round: {roundNumber}");
+                Console.WriteLine("1 = Attack \n2 = Skill \n3 = Heal");
                 string choice = Console.ReadLine();
 
-                if (choice == "1")
+                switch (choice)
                 {
-                    player.Attack(computer);
-                }
-                else if (choice == "2")
-                {
-                    Console.WriteLine("Select Skill: \n1 = Block \n2 = Unblockable Strong Attack \n3 = Heal");
-                    string skillChoice = Console.ReadLine();
-                    switch (skillChoice)
-                    {
-                        case "1":
-                            Console.WriteLine($"{player.Name} used Block");
-                            player.SkillBlock(player);
-                            break;
-                        case "2":
-                            Console.WriteLine($"{player.Name} used Unblockable Strong Attack");
-                            player.SkillStrongAttack(computer);
-                            break;
+                    case "1":
+                        player.Attack(computer);
+                        break;
 
-                        case "3":
-                            Console.WriteLine($"{player.Name} used Heal");
-                            player.SkillHeal(player);
-                            break;
-                    }
-                }
+                    case "2":
+                        player.UseSkill(computer);
+                        break;
 
+                    case "3":
+                        player.SkillHeal(player);
+                        break;
+                }
+               
                 if (computer.Health <= 0)
                 {
                     Console.WriteLine($"\n{player.Name} WIN");
@@ -77,8 +119,10 @@ namespace TestSpill
     {
         public string Name { get; set; }
         public int Health = 100;
-        public int Strength = 50;
+        public int Strength = 30;
         public int Block = 0;
+        public int Dodge = 0;
+        public string Skill { get; set; } = "None";
 
         public GameCharacter(string name)
         {
@@ -88,40 +132,135 @@ namespace TestSpill
         public void Attack(GameCharacter target)
         {
             Random rand = new Random();
-            int Damage = rand.Next(10, 20);
-            int DamageDealt = Damage + Strength - target.Block;
-            if (DamageDealt < 0) DamageDealt = 0;
-            target.Block -= DamageDealt;
+            int damage = rand.Next(10, 20);
+            int rawDamage = damage + Strength;
+            int damageDealt = rawDamage - target.Block;
+            if (damageDealt < 0) damageDealt = 0;
+            target.Block -= rawDamage;
             if (target.Block < 0) target.Block = 0;
-            target.Health -= DamageDealt;
+            target.Health -= damageDealt;
 
-            Console.WriteLine($"{Name} HIT {target.Name} for {DamageDealt} DMG");
+            Console.WriteLine($"{Name} HIT {target.Name} for {damageDealt} DMG");
             Console.WriteLine($"{Name} HP: {Health} Str: {Strength} Block:{Block} \n{target.Name} HP: {target.Health} Str: {target.Strength} Block:{target.Block}");
-        }
-
-        public void SkillBlock(GameCharacter target)
-        {
-            Random rand = new Random();
-            int blockedDMG = rand.Next(25, 50);
-            target.Block = blockedDMG;
-            Console.WriteLine($"{Name} Blocks: {target.Block} DMG");
-        }
-        
-        public void SkillStrongAttack(GameCharacter target)
-        {
-            Random rand = new Random();
-            int Damage = rand.Next(10, 50);
-            int DamageDealt = Damage + Strength;
-            target.Health -= DamageDealt;
-            Console.WriteLine($"{Name} HIT {target.Name} for {DamageDealt} DMG");
         }
         
         public void SkillHeal(GameCharacter target)
         {
             Random rand = new Random();
-            int Heal = rand.Next(10, 50);
-            Health += Heal;
-            Console.WriteLine($"{Name} Heals {target.Name} for {Heal} HP");
+            int heal = rand.Next(10, 50);
+            Health += heal;
+            Console.WriteLine($"{Name} Heals {target.Name} for {heal} HP");
+        }
+
+        public virtual void UseSkill(GameCharacter target)
+        {
+            Console.WriteLine($"{Name} has no available skills!");
+        }
+    }
+
+    internal class Warrior : GameCharacter
+    {
+        public Warrior(string name) : base(name)
+        {
+            Health = 150;
+            Strength = 40;
+            List<string> Skill = ["Block", "StrongAttack", "Shield Slam"];
+        }
+
+        public override void UseSkill(GameCharacter target)
+        {
+            Random rand = new Random();
+            switch (Skill)
+            {
+                case "Block":
+                    int blockedDmg = rand.Next(50, 120);
+                    target.Block = blockedDmg;
+                    Console.WriteLine($"{Name} Blocks: {target.Block} DMG");
+                    break;
+
+                case "StrongAttack":
+                    int damage = rand.Next(20, 50);
+                    int damageDealt = damage + Strength;
+                    target.Health -= damageDealt;
+                    Console.WriteLine($"{Name} HIT {target.Name} for {damageDealt} DMG");
+                    break;
+
+                case "Shield Slam":
+                    if (Block < 0)
+                    {
+                        int slamDmg = Block * 2 + Strength;
+                        target.Health -= slamDmg;
+                    }
+                    break;
+            }
+        }
+    }
+    internal class Mage : GameCharacter
+    {
+        public Mage(string name) : base(name)
+        {
+            Health = 80;
+            Strength = 70;
+            List<string> Skill = ["Fireball", "Magic Missile", "Weaken"];
+        }
+
+        public override void UseSkill(GameCharacter target)
+        {
+            Random rand = new Random();
+            switch (Skill)
+            {
+                case "Fireball":
+                    int damage = rand.Next(50, 100);
+                    target.Health -= (damage + Strength);
+                    break;
+
+                case "Magic Missile":
+                    int missiles = rand.Next(3, 10);
+                    int missileDmg = Strength / 2;
+                    target.Health -= missiles * missileDmg;
+                    break;
+
+                case "Weaken":
+                    target.Strength %= 50;
+                    break;
+            }
+        }
+    }
+    internal class Rogue : GameCharacter
+    {
+        public Rogue(string name) : base(name)
+        {
+            Health = 100;
+            Strength = 50;
+            Dodge = 0;
+            List<string> Skill = ["Crit", "Poison Dagger", "Dodge"];
+        }
+
+        public override void UseSkill(GameCharacter target)
+        {
+            Random rand = new Random();
+            switch (Skill)
+            {
+                case "Crit":
+                    if (target.Health < .5)
+                    {
+                        int critMultiplier = rand.Next(2, 5);
+                        int damage = rand.Next(10, 30);
+                        int damageDealt = damage + Strength / 2 * critMultiplier;
+                        target.Health -= damageDealt;
+                    }
+                    break;
+
+                case "Poison Dagger":
+                    int psnDamage = rand.Next(10, 20);
+                    int psnDamageDealt = psnDamage;
+                    target.Health -= psnDamageDealt;
+                    break;
+
+                case "Dodge":
+                    Dodge += 50;
+                    break;
+            }
         }
     }
 }
