@@ -25,29 +25,29 @@ namespace TestSpill
                 $"\n2 = Mage \n HP: {tempMage.Health} Str: {tempMage.Strength} \n  Skills: {string.Join(", ", tempMage.Skills)}" +
                 $"\n3 = Rogue \n HP: {tempRogue.Health} Str: {tempRogue.Strength} \n  Skills: {string.Join(", ", tempRogue.Skills)}");
 
-            string classChoice = Console.ReadLine();
+            ConsoleKeyInfo classChoice = Console.ReadKey();
 
             GameCharacter player;
 
-            switch (classChoice)
+            switch (classChoice.Key)
             {
-                case "1":
+                case ConsoleKey.D1:
                     player = new Warrior(inputName);
                     break;
 
-                case "2":
+                case ConsoleKey.D2:
                     player = new Mage(inputName);
                     break;
 
-                case "3":
+                case ConsoleKey.D3:
                     player = new Rogue(inputName);
                     break;
                 default:
                     player = new GameCharacter(inputName);
                     break;
             }
-
-            Console.WriteLine($"{player.Name} Selected Class {player.GetType().Name}");
+            
+            Console.WriteLine($"\n{player.Name} Selected Class {player.GetType().Name}");
             Console.ReadLine();
 
             GameCharacter computer;
@@ -77,6 +77,7 @@ namespace TestSpill
             Console.WriteLine(
                 $"{player.Name} HP: {player.Health} Str: {player.Strength} Block:{player.Block}\n{computer.Name} HP: {computer.Health} Str: {computer.Strength} Block:{computer.Block}");
             Console.ReadLine();
+            Console.Clear();
 
             while (fightActive)
             {
@@ -98,7 +99,6 @@ namespace TestSpill
                     fightActive = false;
                     break;
                 }
-                Console.ReadLine();
 
                 Console.WriteLine($"Round: {roundNumber}");
                 Console.WriteLine("1 = Attack \n2 = Skill \n3 = Heal");
@@ -138,6 +138,7 @@ namespace TestSpill
                 }
 
                 Console.ReadLine();
+                Console.Clear();
             }
         }
     }

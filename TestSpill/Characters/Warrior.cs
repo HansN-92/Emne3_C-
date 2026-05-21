@@ -4,16 +4,17 @@
     {
         public Warrior(string name) : base(name)
         {
-            MaxHealth = 150;
-            Health = 150;
-            Strength = 40;
-            Skills = new List<string> { "Block", "StrongAttack", "Shield Slam" };
+            MaxHealth = 180;
+            Health = 180;
+            Strength = 20;
+            MaxStrength = 20;
+            Skills = new List<string> { "Block", "Strong Attack", "Shield Slam" };
         }
 
         public void SkillBlock(GameCharacter target)
         {
             Random rand = new Random();
-            int blockedDmg = rand.Next(50, 120);
+            int blockedDmg = rand.Next(20, 40);
             Block = blockedDmg;
             Console.WriteLine($"{Name} Gain {Block} Block");
         }
@@ -22,7 +23,7 @@
         {
             Random rand = new Random();
             if (target.TryDodge()) return;
-            int damage = rand.Next(20, 50);
+            int damage = rand.Next(15, 35);
             int damageDealt = damage + Strength;
             target.Health -= damageDealt;
             Console.WriteLine($"{Name} HIT {target.Name} for {damageDealt} DMG");
@@ -45,8 +46,7 @@
             }
             else
             {
-                Console.WriteLine($"{Name} has {Block}");
-                ShowSkillMenu();
+                Console.WriteLine($"{Name} has {Block} Block");
             }
         }
 
@@ -62,7 +62,7 @@
                     SkillBlock(target);
                     break;
 
-                case "StrongAttack":
+                case "Strong Attack":
                     SkillStrongAttack(target);
                     break;
 
@@ -74,7 +74,7 @@
 
         public override void TakeTurn(GameCharacter target)
         {
-            if ((double)Health / MaxHealth < 0.5 && Block < 40)
+            if ((double)Health / MaxHealth < 0.5 && Block < 20)
             {
                 SkillBlock(target);
             }

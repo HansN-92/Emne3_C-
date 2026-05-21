@@ -4,20 +4,21 @@
     {
         public Rogue(string name) : base(name)
         {
-            MaxHealth = 100;
-            Health = 100;
-            Strength = 50;
+            MaxHealth = 110;
+            Health = 110;
+            Strength = 20;
+            MaxStrength = 20;
             Dodge = 0;
             Skills = new List<string> { "Crit", "Poison Dagger", "Dodge" };
         }
 
         public void UseSkillCrit(GameCharacter target)
         {
-            if ((double)target.Health / target.MaxHealth < 0.5)
+            if ((double)target.Health / target.MaxHealth < 0.4)
             {
                 Random rand = new Random();
                 if (target.TryDodge()) return;
-                int critMultiplier = rand.Next(2, 5);
+                int critMultiplier = rand.Next(2, 3);
                 int damage = rand.Next(10, 30);
                 int damageDealt = damage + Strength / 2 * critMultiplier;
                 target.Health -= damageDealt;
@@ -26,14 +27,13 @@
             else
             {
                 Console.WriteLine($"{target.Name} HP threshold not met");
-                ShowSkillMenu();
             }
         }
         public void UseSkillPoisonDagger(GameCharacter target)
         {
             Random rand = new Random();
             if (target.TryDodge()) return;
-            target.PoisonDamage = rand.Next(10, 20);
+            target.PoisonDamage = rand.Next(10, 16);
             target.PoisonRounds = rand.Next(2, 5);
 
             int rawDamage = target.PoisonDamage + Strength;
@@ -53,7 +53,7 @@
         public void UseSkillDodge(GameCharacter target)
         {
             Random rand = new Random();
-            int dodgeAmount = rand.Next(20, 50);
+            int dodgeAmount = rand.Next(15, 35);
             AddDodge(dodgeAmount);
             Console.WriteLine($"{Name} used Dodge gaining {dodgeAmount}% dodge chance for a total chance of {Dodge}%");
         }
@@ -82,7 +82,7 @@
 
         public override void TakeTurn(GameCharacter target)
         {
-            if ((double)target.Health / target.MaxHealth < 0.5)
+            if ((double)target.Health / target.MaxHealth < 0.4)
             {
                 UseSkillCrit(target);
             }

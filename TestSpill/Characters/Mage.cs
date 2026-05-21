@@ -4,9 +4,10 @@
     {
         public Mage(string name) : base(name)
         {
-            MaxHealth = 80;
-            Health = 80;
-            Strength = 70;
+            MaxHealth = 70;
+            Health = 70;
+            Strength = 25;
+            MaxStrength = 25;
             Skills = new List<string> { "Fireball", "Magic Missile", "Weaken" };
         }
 
@@ -14,7 +15,7 @@
         {
             Random rand = new Random();
             if (target.TryDodge()) return;
-            int damage = rand.Next(50, 100);
+            int damage = rand.Next(15, 30);
             int rawDamage = damage + Strength;
             int damageDealt = rawDamage - target.Block / 2;
             if (damageDealt < 0) damageDealt = 0;
@@ -26,15 +27,18 @@
         public void UseSkillMagicMissile(GameCharacter target)
         {
             Random rand = new Random();
-            int missiles = rand.Next(3, 10);
-            int missileDmg = Strength / 2;
+            int missiles = rand.Next(2, 5);
+            int missileDmg = Strength / 3;
             target.Health -= missiles * missileDmg;
             Console.WriteLine($"{Name} cast Magic Missile and HIT {missiles} for {missileDmg} each");
         }
         public void UseSkillWeaken(GameCharacter target)
         {
-            target.Strength /= 2;
-            Console.WriteLine($"{Name} cast Weaken on {target.Name} reducing Str to {target.Strength}");
+            if (target.Strength == target.MaxStrength)
+            {
+                target.Strength -= target.MaxStrength /4;
+                Console.WriteLine($"{Name} cast Weaken on {target.Name} reducing Str to {target.Strength}");
+            }
         }
 
         public override void UseSkill(GameCharacter target)

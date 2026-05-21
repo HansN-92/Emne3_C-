@@ -5,7 +5,8 @@
         public string Name { get; set; }
         public int MaxHealth { get; set; } = 100;
         public int Health = 100;
-        public int Strength = 30;
+        public int Strength = 15;
+        public int MaxStrength = 15;
         public int Block = 0;
         public int Dodge = 0;
         public int PoisonDamage { get; set; } = 0;
@@ -79,9 +80,9 @@
         public void SkillHeal(GameCharacter target)
         {
             Random rand = new Random();
-            if (Health < MaxHealth - 25)
+            if ((double)Health / MaxHealth < 0.4)
             {
-                int heal = rand.Next(10, 50);
+                int heal = rand.Next(15, 30);
                 Health += heal;
                 if (Health > MaxHealth)
                 {
