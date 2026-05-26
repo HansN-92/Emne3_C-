@@ -47,27 +47,29 @@
             else
             {
                 Console.WriteLine($"{Name} has {Block} Block");
+                UseSkill(target);
             }
         }
 
         public override void UseSkill(GameCharacter target)
         {
             ShowSkillMenu();
-            string input = Console.ReadLine();
-            if (!int.TryParse(input, out int choice)) return;
-            string selectedSkill = Skills[choice - 1];
-            switch (selectedSkill)
+            ConsoleKeyInfo selectedSkill = Console.ReadKey(true);
+            switch (selectedSkill.Key)
             {
-                case "Block":
+                case ConsoleKey.D1:
                     SkillBlock(target);
                     break;
 
-                case "Strong Attack":
+                case ConsoleKey.D2:
                     SkillStrongAttack(target);
                     break;
 
-                case "Shield Slam":
+                case ConsoleKey.D3:
                     SkillShieldSlam(target);
+                    break;
+                default:
+                    UseSkill(target);
                     break;
             }
         }

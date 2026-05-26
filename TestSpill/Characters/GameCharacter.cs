@@ -57,6 +57,7 @@
             {
                 Console.WriteLine($"{i + 1} = {Skills[i]}");
             }
+            Console.WriteLine();
         }
 
         public void Attack(GameCharacter target)
@@ -93,7 +94,7 @@
             else
             {
                 Console.WriteLine($"{Name} HP above threshold");
-                ShowSkillMenu();
+                // PlayerTurn();
             }
         }
 

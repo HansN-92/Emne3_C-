@@ -39,27 +39,29 @@
                 target.Strength -= target.MaxStrength /4;
                 Console.WriteLine($"{Name} cast Weaken on {target.Name} reducing Str to {target.Strength}");
             }
+            else
+                UseSkill(target);
         }
 
         public override void UseSkill(GameCharacter target)
         {
             ShowSkillMenu();
-            string input = Console.ReadLine();
-            if (!int.TryParse(input, out int choice)) return;
-            string selectedSkill = Skills[choice - 1];
-
-            switch (selectedSkill)
+            ConsoleKeyInfo selectedSkill = Console.ReadKey(true);
+            switch (selectedSkill.Key)
             {
-                case "Fireball":
+                case ConsoleKey.D1:
                     UseSkillFireball(target);
                     break;
 
-                case "Magic Missile":
+                case ConsoleKey.D2:
                     UseSkillMagicMissile(target);
                     break;
 
-                case "Weaken":
+                case ConsoleKey.D3:
                     UseSkillWeaken(target);
+                    break;
+                default:
+                    UseSkill(target);
                     break;
             }
         }

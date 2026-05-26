@@ -19,65 +19,70 @@ namespace TestSpill
             Warrior tempWarrior = new Warrior("temp");
             Mage tempMage = new Mage("temp");
             Rogue tempRogue = new Rogue("temp");
-
-            Console.WriteLine(
-                $"Select Class: \n1 = Warrior \n HP: {tempWarrior.Health} Str: {tempWarrior.Strength} \n  Skills: {string.Join(", ", tempWarrior.Skills)}" +
-                $"\n2 = Mage \n HP: {tempMage.Health} Str: {tempMage.Strength} \n  Skills: {string.Join(", ", tempMage.Skills)}" +
-                $"\n3 = Rogue \n HP: {tempRogue.Health} Str: {tempRogue.Strength} \n  Skills: {string.Join(", ", tempRogue.Skills)}");
-
-            ConsoleKeyInfo classChoice = Console.ReadKey();
-
             GameCharacter player;
-
-            switch (classChoice.Key)
-            {
-                case ConsoleKey.D1:
-                    player = new Warrior(inputName);
-                    break;
-
-                case ConsoleKey.D2:
-                    player = new Mage(inputName);
-                    break;
-
-                case ConsoleKey.D3:
-                    player = new Rogue(inputName);
-                    break;
-                default:
-                    player = new GameCharacter(inputName);
-                    break;
-            }
-            
-            Console.WriteLine($"\n{player.Name} Selected Class {player.GetType().Name}");
-            Console.ReadLine();
-
             GameCharacter computer;
-            Random rand = new Random();
-            int computerClassChoice = rand.Next(1, 4);
-            switch (computerClassChoice)
+
+            PlayerClassChoice();
+            void PlayerClassChoice()
             {
-                case 1:
-                    computer = new Warrior("Computer");
-                    break;
+                Console.WriteLine(
+                    $"Select Class: \n1 = Warrior \n HP: {tempWarrior.Health} Str: {tempWarrior.Strength} \n  Skills: {string.Join(", ", tempWarrior.Skills)}" +
+                    $"\n2 = Mage \n HP: {tempMage.Health} Str: {tempMage.Strength} \n  Skills: {string.Join(", ", tempMage.Skills)}" +
+                    $"\n3 = Rogue \n HP: {tempRogue.Health} Str: {tempRogue.Strength} \n  Skills: {string.Join(", ", tempRogue.Skills)}");
 
-                case 2:
-                    computer = new Mage("Computer");
-                    break;
+                ConsoleKeyInfo classChoice = Console.ReadKey(true);
 
-                case 3:
-                    computer = new Rogue("Computer");
-                    break;
-                default:
-                    computer = new GameCharacter("Computer");
-                    break;
+                switch (classChoice.Key)
+                {
+                    case ConsoleKey.D1:
+                        player = new Warrior(inputName);
+                        break;
+
+                    case ConsoleKey.D2:
+                        player = new Mage(inputName);
+                        break;
+
+                    case ConsoleKey.D3:
+                        player = new Rogue(inputName);
+                        break;
+                    default:
+                        PlayerClassChoice();
+                        break;
+                }
             }
 
-            Console.WriteLine($"{computer.Name} Selected Class {computer.GetType().Name}");
-            Console.ReadLine();
+            Console.WriteLine($"\n{player.Name} Selected Class {player.GetType().Name}");
+            ComputerClassChoice();
 
-            Console.WriteLine(
-                $"{player.Name} HP: {player.Health} Str: {player.Strength} Block:{player.Block}\n{computer.Name} HP: {computer.Health} Str: {computer.Strength} Block:{computer.Block}");
-            Console.ReadLine();
-            Console.Clear();
+            void ComputerClassChoice()
+            {
+                Random rand = new Random();
+                int computerClassChoice = rand.Next(1, 4);
+                switch (computerClassChoice)
+                {
+                    case 1:
+                        computer = new Warrior("Computer");
+                        break;
+
+                    case 2:
+                        computer = new Mage("Computer");
+                        break;
+
+                    case 3:
+                        computer = new Rogue("Computer");
+                        break;
+                    default:
+                        computer = new GameCharacter("Computer");
+                        break;
+                }
+
+                Console.WriteLine($"{computer.Name} Selected Class {computer.GetType().Name}");
+
+                Console.WriteLine(
+                    $"{player.Name} HP: {player.Health} Str: {player.Strength} Block:{player.Block}\n{computer.Name} HP: {computer.Health} Str: {computer.Strength} Block:{computer.Block}");
+                Console.ReadLine();
+                Console.Clear();
+            }
 
             while (fightActive)
             {
@@ -100,23 +105,30 @@ namespace TestSpill
                     break;
                 }
 
-                Console.WriteLine($"Round: {roundNumber}");
-                Console.WriteLine("1 = Attack \n2 = Skill \n3 = Heal");
-                string choice = Console.ReadLine();
-
-                switch (choice)
+                PlayerTurn();
+                void PlayerTurn()
                 {
-                    case "1":
-                        player.Attack(computer);
-                        break;
+                    Console.WriteLine($"Round: {roundNumber}");
+                    Console.WriteLine("1 = Attack \n2 = Skill \n3 = Heal");
+                    ConsoleKeyInfo choice = Console.ReadKey(true);
 
-                    case "2":
-                        player.UseSkill(computer);
-                        break;
+                    switch (choice.Key)
+                    {
+                        case ConsoleKey.D1:
+                            player.Attack(computer);
+                            break;
 
-                    case "3":
-                        player.SkillHeal(player);
-                        break;
+                        case ConsoleKey.D2:
+                            player.UseSkill(computer);
+                            break;
+
+                        case ConsoleKey.D3:
+                            player.SkillHeal(player);
+                            break;
+                        default:
+                            PlayerTurn();
+                            break;
+                    }
                 }
 
                 if (computer.Health <= 0)
@@ -126,7 +138,8 @@ namespace TestSpill
                     break;
                 }
 
-                Console.ReadLine();
+                Console.WriteLine();
+                // Console.ReadLine();
 
                 computer.TakeTurn(player);
 

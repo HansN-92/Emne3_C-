@@ -27,6 +27,7 @@
             else
             {
                 Console.WriteLine($"{target.Name} HP threshold not met");
+                UseSkill(target);
             }
         }
         public void UseSkillPoisonDagger(GameCharacter target)
@@ -38,7 +39,7 @@
 
             int rawDamage = target.PoisonDamage + Strength;
             int damageDealtRogue = rawDamage - target.Block;
-            if (damageDealtRogue < 0)
+            if (damageDealtRogue <= 0)
             {
                 damageDealtRogue = 0;
                 target.PoisonRounds = 0;
@@ -61,21 +62,22 @@
         public override void UseSkill(GameCharacter target)
         {
             ShowSkillMenu();
-            string input = Console.ReadLine();
-            if (!int.TryParse(input, out int choice)) return;
-            string selectedSkill = Skills[choice - 1];
-            switch (selectedSkill)
+            ConsoleKeyInfo selectedSkill = Console.ReadKey(true);
+            switch (selectedSkill.Key)
             {
-                case "Crit":
+                case ConsoleKey.D1:
                     UseSkillCrit(target);
                     break;
 
-                case "Poison Dagger":
+                case ConsoleKey.D2:
                     UseSkillPoisonDagger(target);
                     break;
 
-                case "Dodge":
+                case ConsoleKey.D3:
                     UseSkillDodge(target);
+                    break;
+                default:
+                    UseSkill(target);
                     break;
             }
         }
