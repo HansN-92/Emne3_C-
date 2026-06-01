@@ -5,7 +5,7 @@
         public string BrukerNavn { get; set; }
         private string Passord { get; set; }
         public string Name { get; set; }
-        public List<Konto> Kontoer { get; set; } = new List<Konto>();
+        public List<Konto> Kontoer { get; set; } 
 
         public Kunde(string name, List<Konto> kontoer)
         {
