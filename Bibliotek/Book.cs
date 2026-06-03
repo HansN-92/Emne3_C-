@@ -19,7 +19,7 @@
             Location = location;
         }
 
-        public void CreateBookId(int id)
+        internal void CreateBookId(int id)
         {
             Id = id;
         }

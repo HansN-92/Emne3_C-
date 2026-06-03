@@ -77,7 +77,13 @@
             "Gothic Horror",
             "Shelf C2"));
 
-            Menu.ShowMain();
+            //bool libraryRunning = true;
+
+            //while (libraryRunning)
+            //{
+            //}
+
+            Menu.ShowMain(library);
 
         }
     }

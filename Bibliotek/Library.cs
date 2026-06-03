@@ -9,24 +9,46 @@
         {
             book.CreateBookId(_nextId++);
             _books.Add(book);
-        }     
-        
-        public void RemoveBook(Book book)
-        {
-            _books.Remove(book);
         }
 
-        public void SearchBooks()
+        public bool RemoveBook(int id)
         {
+            Book book = FindBookId(id);
+            if (book == null) 
+                return false;
+            _books.Remove(book);
+            return true;
+        }
 
-        }        
-        
-        public void ShowAllBooks()
+        public List<Book> SearchBooks(string searchInput)
         {
+            List<Book> results = new List<Book>();
             foreach (Book book in _books)
             {
-                Console.WriteLine($"{book}");
+                if (book.Title.ToLower().Contains(searchInput) ||
+                    book.Author.ToLower().Contains(searchInput) ||
+                    book.Genre.ToLower().Contains(searchInput) ||
+                    book.ReleaseYear.ToString().Contains(searchInput) ||
+                    book.Location.ToLower().Contains(searchInput))
+                {
+                    results.Add(book);
+                }
             }
+            return results;
+        }
+
+        public List<Book> ShowAllBooks()
+        {
+            return new List<Book>(_books);
+        }
+
+        public Book FindBookId(int id)
+        {
+            foreach (Book book in _books)
+                if (book.Id == id) 
+                    return book;
+
+            return null;
         }
     }
 }
