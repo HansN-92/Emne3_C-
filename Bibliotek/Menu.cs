@@ -5,11 +5,11 @@
         public static void ShowMain(Library library)
         {
             Console.WriteLine("Bibliotek \n Hva vil du gjøre? " +
-                              "\n1. Se alle Bøker" +
-                              "\n2. Søk" +
-                              "\n3. Legg til Bok" +
-                              "\n4. Slett Bok " +
-                              "\nQ. Exit ");
+                              "\n  1. Se alle Bøker" +
+                              "\n  2. Søk" +
+                              "\n  3. Legg til Bok" +
+                              "\n  4. Slett Bok " +
+                              "\n  Q. Exit ");
 
             ConsoleKeyInfo mainChoice = Console.ReadKey(true);
             switch (mainChoice.Key)
@@ -136,11 +136,57 @@
         private static void AddBookMenu(Library library)
         {
             Console.Clear();
-            Console.WriteLine("Tittel:"); string title = Console.ReadLine();
-            Console.WriteLine("Forfatter:"); string author = Console.ReadLine();
-            Console.WriteLine("År:"); int.TryParse(Console.ReadLine(), out int year);
-            Console.WriteLine("Sjanger:"); string genre = Console.ReadLine();
-            Console.WriteLine("Plassering:"); string location = Console.ReadLine();
+
+            string title;
+            do
+            {
+                Console.WriteLine("Tittel:");
+                title = Console.ReadLine();
+                if (string.IsNullOrWhiteSpace(title))
+                    Console.WriteLine("Tittel kan ikke være tom.");
+            } 
+            while (string.IsNullOrWhiteSpace(title));
+
+            string author;
+            do
+            {
+                Console.WriteLine("Forfatter:");
+                author = Console.ReadLine();
+                if (string.IsNullOrWhiteSpace(author))
+                    Console.WriteLine("Forfatter kan ikke være tom.");
+            } 
+            while (string.IsNullOrWhiteSpace(author));
+
+            int year;
+            string input;
+            do
+            {
+                Console.WriteLine("År:");
+                input = Console.ReadLine();
+                if (!int.TryParse(input, out year))
+                    Console.WriteLine("År må være et gyldig tall.");
+            } 
+            while (!int.TryParse(input, out year));
+
+            string genre;
+            do
+            {
+                Console.WriteLine("Sjanger:");
+                genre = Console.ReadLine();
+                if (string.IsNullOrWhiteSpace(genre))
+                    Console.WriteLine("Sjanger kan ikke være tom.");
+            } 
+            while (string.IsNullOrWhiteSpace(genre));
+
+            string location;
+            do
+            {
+                Console.WriteLine("Plassering:");
+                location = Console.ReadLine();
+                if (string.IsNullOrWhiteSpace(location))
+                    Console.WriteLine("Plassering kan ikke være tom.");
+            } 
+            while (string.IsNullOrWhiteSpace(location));
 
             library.AddBook(new Book(title, year, author, genre, location));
             Console.WriteLine($"Bok lagt til i bibliotek med plassering: {location}");
@@ -160,7 +206,7 @@
 
         private static void Pause(Library library)
         {
-            Console.WriteLine("\nTrykk Enter for å gå tilbake");
+            Console.WriteLine("\nTrykk Enter for å gå til Main");
             Console.ReadLine();
             Console.Clear();
             ShowMain(library);
