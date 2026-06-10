@@ -2,6 +2,6 @@
 {
     internal class WildEncounter
     {
-        123
+        asd
     }
 }
